@@ -1,5 +1,5 @@
 ---
-title: "Testing"
+title: "Chapter 6 Lab Data Acquisition"
 format: html
 editor: source
 ---

@@ -16,10 +16,12 @@ To submit your work render the file by clicking the blue segmented arrow at the 
 In this Lab, we will work on analyzing a provided dataset and concluding whether it seems to follow a normal distribution. To accomplish this, we will compare the empirical data to the theoretical distribution to determine if data from the experiment fits.\
 The first data set, `M64_16S.csv` is data acquired from the leaderboard of Speedrun.com on completion times for the game "Super Mario 64".
 
-### Question 1
-
+::: callout-note
+#### Question 1.1
 Before we start, would you expect the completion times to be normally distributed?
 
+Answer: 
+:::
 
 ## Getting Started
 
@@ -59,9 +61,13 @@ gg_hist <- data %>%
 gg_hist # display resulting plot
 ```
 
-#### Question 2
+::: callout-note
+#### Question 1.2
 
 Does the data appear normally distributed?
+
+Answer:
+:::
 
 ### Summary Statistics
 
@@ -71,23 +77,39 @@ We can next look at the summary statistics:
 data$time_seconds %>% summary()
 ```
 
-#### Question 3
+::: callout-note
+#### Question 1.3
 
-What is the mean completion time? What is the range of completion times?
+From the summary above, what is the mean completion time? What is the range of completion times?
 
-#### Question 4
+Answer: 
 
-What is the standard deviation?
+:::
+
+::: callout-note
+#### Question 1.4
+
+Using the code block below, what is the standard deviation?
 
 ```{r}
 data$time_seconds %>% sd()
 ```
 
-#### Question 5
+Answer: 
 
-Using the mean and standard deviation, what is the approximate normal distribution? $X \sim N(___,___)$
+:::
+
+::: callout-note
+#### Question 1.5
+
+Using the mean and standard deviation, what is the approximate normal distribution? 
+
+Answer: $X \sim N(___,___)$
+
+:::
 
 ## Describe the data
+
 
 ### Empirical distribution (from the data)
 
@@ -105,12 +127,15 @@ Using the mean and standard deviation, what is the approximate normal distributi
 
 ```{r}
 # 15th percentile
-quantile(data$time_seconds, probs = .15)
+x <- data$time_seconds
+prob <- .15
+quantile(x, probs = prob)
 ```
 
 ```{r}
 # 85th percentile
-quantile()
+prob <- .5 # Change me!!
+quantile(x, prob)
 ```
 
 ```{r}
@@ -120,20 +145,25 @@ less_1000 <- sum(data$time_seconds < 1000)
 total <- length(data$time_seconds)
 
 # Probability of less than 1000?
-less_1000/total
+# Recall probability of event occurring is (# of desired outcomes)/(# of total outcomes)
+
+###########
+# Fill in probability calculation here
+
+###########
 ```
 
 ### Theoretical Distribution
 
 Use the normal distribution with mean and standard deviation to answer the following:
 
--   What is the inter quartile range?
+-   What is the interquartile range?
 
 -   The 15th percentile:
 
 -   The 85th percentile:
 
--   Median is:
+-   Mean is:
 
 -   What is the theoretical probability that a randomly chosen completion time is less than 1000s?
 
@@ -141,24 +171,37 @@ Use the normal distribution with mean and standard deviation to answer the follo
 
 ```{r}
 # 15th percentile
-qnorm(.15, 1337, 300)
+p <- .5 # CHANGE ME!!
+mean <- 0 # CHANGE ME!!
+sd <- 1 # CHANGE ME!!
+qnorm(p, mean, sd)
 ```
 
 ```{r}
 # 85th percentile
+p <- .5 # CHANGE ME!!
+mean <- 0 # CHANGE ME!!
+sd <- 1 # CHANGE ME!!
 qnorm(p, mean, sd)
 ```
 
 ```{r}
 # Probability of less than 1000?
+q <- 0 # CHANGE ME!!
+mean <- 0 # CHANGE ME!!
+sd <- 1 # CHANGE ME!!
 pnorm(q, mean, sd)
 ```
 
 ## Conclusion
 
-Based on the prior analysis, do you think that the theory that the data is normally distributed holds up?
+::: callout-note
+Based on the prior analysis, do you think that the theory that the data is normally distributed holds up? Compare the calculated mean, 15/85th percentiles, probability calculation between the empirical data and theoretical distribution. 
 
-As a final look, consider the histogram from earlier with the normal distribution we analyzed overlayed:
+Answer: 
+:::
+
+As a final look, consider the histogram from earlier with the normal distribution we analyzed on top:
 
 ```{r}
 gg_hist + 
@@ -173,9 +216,13 @@ gg_hist +
 In this Lab, we will work on analyzing a provided dataset and concluding whether it seems to follow a normal distribution. To accomplish this, we will compare the empirical data to the theoretical distribution to determine if data from the experiment fits.\
 The first data set, `SOCR-HeightWeight.csv` is data acquired from Kaggle, a website that hosts data science competitions. This is a simple dataset. It contains only the height (inches) and weights (pounds) of 25,000 different humans of 18 years of age.
 
-### Question 1
+::: callout-note
+### Question 2.1
 
 Before we start, would you expect the height to be normally distributed?
+
+Answer: 
+:::
 
 ## Getting Started
 
@@ -216,9 +263,13 @@ gg_hist2 <- data2 %>%
 gg_hist2 # display resulting plot
 ```
 
-#### Question 2
+::: callout-note
+#### Question 2.2
 
 Does the data appear normally distributed?
+
+Answer:
+:::
 
 ### Summary Statistics
 
@@ -228,11 +279,16 @@ We can next look at the summary statistics:
 data2$Height %>% summary()
 ```
 
-#### Question 3
+::: callout-note
+#### Question 2.3
 
-What is the mean height? What is the range of heights?
+From the summary above what is the mean height? What is the range of heights?
 
-#### Question 4
+Answer: 
+:::
+
+::: callout-note
+#### Question 2.4
 
 What is the standard deviation?
 
@@ -240,9 +296,18 @@ What is the standard deviation?
 data2$Height %>% sd()
 ```
 
-#### Question 5
+Answer: 
+:::
 
-Using the mean and standard deviation, what is the approximate normal distribution? $X \sim N(___,___)$
+::: Callout-note
+
+#### Question 2.5
+
+Using the mean and standard deviation, what is the approximate normal distribution? 
+
+Answer: $X \sim N(___,___)$
+
+:::
 
 ## Describe the data
 
@@ -262,12 +327,15 @@ Using the mean and standard deviation, what is the approximate normal distributi
 
 ```{r}
 # 15th percentile
-quantile(data2$Height, probs = .15)
+x <- data2$Height
+prob <- .15
+quantile(x, probs = prob)
 ```
 
 ```{r}
 # 85th percentile
-quantile()
+prob <- .5 # CHANGE ME!!
+quantile(x, prob)
 ```
 
 ```{r}
@@ -277,7 +345,12 @@ less_72 <- sum(data2$Height < 72)
 total <- length(data2$Height)
 
 # Probability of less than 72?
+# Recall probability of event occurring is (# of desired outcomes)/(# of total outcomes)
 
+###########
+# Fill in probability calculation here
+
+###########
 ```
 
 ### Theoretical Distribution
@@ -298,22 +371,35 @@ Use the normal distribution with mean and standard deviation to answer the follo
 
 ```{r}
 # 15th percentile
+p <- .5 # CHANGE ME!!
+mean <- 0 # CHANGE ME!!
+sd <- 1 # CHANGE ME!!
 qnorm(p, mean, sd)
 ```
 
 ```{r}
 # 85th percentile
+p <- .5 # CHANGE ME!!
+mean <- 0 # CHANGE ME!!
+sd <- 1 # CHANGE ME!!
 qnorm(p, mean, sd)
 ```
 
 ```{r}
 # Probability of less than 72?
+q <- 0 # CHANGE ME!!
+mean <- 0 # CHANGE ME!!
+sd <- 1 # CHANGE ME!!
 pnorm(q, mean, sd)
 ```
 
 ## Conclusion
 
-Based on the prior analysis, do you think that the theory that the data is normally distributed holds up?
+::: callout-note
+Based on the prior analysis, do you think that the theory that the data is normally distributed holds up? Compare the calculated mean, 15/85th percentiles, probability calculation between the empirical data and theoretical distribution. 
+
+Answer: 
+:::
 
 As a final look, consider the histogram from earlier with the normal distribution we analyzed overlayed:
 
