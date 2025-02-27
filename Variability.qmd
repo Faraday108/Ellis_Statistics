@@ -1,0 +1,59 @@
+---
+title: "Variation activity - Dice Roll"
+format: html
+---
+
+## Dice Roll
+
+Here we will simulate the rolling of dice! The advantage of working through this on a computer is that we can roll the dice vastly many more times and quickly visualize the distribution. 
+
+```{r}
+# Define the numbers on a die
+die_numbers <- c(1,2,3,4,5,6)
+# How many times to roll? 
+number_of_rolls <- 20
+# Roll the die! Data is saved as a data frame, think of a table with column names 
+# "roll_number" and "roll_value"
+roll_data <- data.frame(roll_number = c(1:number_of_rolls), 
+                        roll_value = sample(x = die_numbers, 
+                                            size = number_of_rolls, 
+                                            replace = TRUE))
+```
+
+## Investigating the data
+### Looking at the data frame
+Simply looking at `roll_data` doesn't give us an idea of the distribution
+
+```{r}
+# head shows first n = 20 data points
+head(roll_data, 20)
+```
+
+### Using a graph
+Using a graph is much more informative!
+
+```{r}
+if (!require(ggplot2)) install.packages("ggplot2")
+library(ggplot2)
+
+ggplot(data = roll_data, aes(x = roll_value)) + 
+  geom_bar()
+```
+
+## What do more rolls look like? 
+
+Increase the number of rolls a couple of times, executing the whole code block after you do so. What do you notice? 
+
+```{r}
+number_of_rolls <- 5000
+# Roll the die! Data is saved as a data frame, think of a table with column names 
+# "roll_number" and "roll_value"
+roll_data <- data.frame(roll_number = c(1:number_of_rolls), 
+                        roll_value = sample(x = die_numbers, 
+                                            size = number_of_rolls, 
+                                            replace = TRUE))
+
+ggplot(data = roll_data, aes(x = roll_value)) + 
+  geom_bar()
+```
+

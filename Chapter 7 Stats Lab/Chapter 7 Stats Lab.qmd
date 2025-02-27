@@ -1,0 +1,282 @@
+---
+title: "Chapter 7 Stats Lab"
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+cache: true
+editor: visual
+theme: darkly
+---
+
+## Instructions
+
+Work through the following prompts and respond to each question in the space following each question.\
+To submit your work render the file by clicking the blue segmented arrow at the top of this window to render to a .html. Submit the resulting "Chapter 7 Stats Lab.html" and "Chapter 7 Stats Lab_files" folder to the Google drive folder I shared.
+
+## Background
+
+In this Lab, we will work on applying the Central Limit Theorem for Means and Sums to a provided dataset. For this lab, I chose "The City of Pittsburgh Trees", a dataset that includes information on the over 45000 trees managed by the City of Pittsburgh Department of Public Works Forestry Division.
+
+## Getting Started
+
+1.  Run the following code block to load the dataset:
+
+```{r setup}
+# Check if used packages are installed, install if not
+if(!require(tidyverse, quietly = TRUE)) {
+  install.packages("tidyverse")
+  require(tidyverse)
+}
+
+# Check if data has already been downloaded, download if not. 
+if(!file.exists("trees.csv")) {
+  download.file("https://data.wprdc.org/datastore/dump/1515a93c-73e3-4425-9b35-1cd11b2196da", "./trees.csv")
+}
+
+# Check if data has been loaded to RStudio, load if not
+if(!exists("Pittsburgh_trees")) {
+  # Load data file
+  trees <- read.csv("trees.csv")
+  # Select height data (ignore NA values)
+  tree_height <- data.frame(
+    height = trees$height[!is.na(trees$height)])
+  # Select estimated $ benefit data (ignore NA values)
+  tree_benefits <- data.frame(
+    benefits = trees$overall_benefits_dollar_value[!is.na(trees$overall_benefits_dollar_value)])
+}
+```
+
+2.  Follow the guided exercises in this notebook, running code chunks as you encounter them.
+3.  Respond to all Questions inside callouts.
+
+## Explore the data
+
+### Tree Heights
+
+Let's take a look at the distribution of data by constructing a histogram:
+
+```{r Height Histogram}
+if(!require(ggplot2, quietly = TRUE)) {
+  install.packages("ggplot2")
+  require(ggplot2)
+}
+
+ggplot(data = tree_height, aes(x = height)) + 
+  geom_histogram(binwidth = 5)
+```
+
+There seems to be something strange going on, there are a lot of trees with a low height! Before going further, let's try to figure out what is going on.
+
+#### Why low heights?
+
+From the graph, the strange spike in low heights seems to be less than 10, so let's look at a summary of just those values.
+
+```{r Low Height Summary}
+tree_height %>%
+  filter(height < 10) %>% # Look only at heights less than 10
+  group_by(height) %>% # Group by distinct heights
+  summarize(n = n()) # Count number of each distinct height
+```
+
+::: callout-note
+#### Question
+
+How many trees have a height of 0?
+:::
+
+Depending on the exact question you are trying to answer we may want to include trees with height 0 or exclude them. For this lab, lets narrow the data to only include trees with a recorded height. Note that if this were a report or scientific paper, you would have to fully disclose your selection criteria and reasoning behind it.
+
+```{r Subset trees with height}
+# Remove trees with height == 0
+tree_height <- tree_height %>% filter(height != 0)
+
+# Check histogram
+ggplot(data = tree_height, aes(x = height)) + 
+  geom_histogram(binwidth = 5)
+```
+
+::: callout-note
+#### Question
+
+Do tree heights in this data set appear to be normally distributed?
+:::
+
+### Tree Economic Benefit value
+
+Let's also look at the distribution of estimated tree benefit value by constructing another histogram:
+
+```{r Benefit Histogram}
+ggplot(data = tree_benefits, aes(x = benefits)) + 
+  geom_histogram(binwidth = 20)
+```
+
+::: callout-note
+#### Question
+
+Are there any strange values in the `tree_benefits` data?
+
+Do tree economic benefits in this data set appear to be normally distributed?
+:::
+
+## Central Limit Theorem (CLT)
+
+Recall that the CLT says that the number of samples depends on whether the *original population* is normally distributed. Since neither of these are normally distributed, we should pick sample sizes of $n = 30$ or larger.
+
+::: callout-tip
+Central Limit Theorem of Means:
+
+$$
+\bar{X} \sim N \left(\mu_x, \frac{\sigma_x}{\sqrt n} \right)
+$$
+:::
+
+::: callout-tip
+Central Limit Theorem of Sums: 
+
+$$
+\Sigma{X} \sim N \left(n\cdot\mu_x, \sqrt{n}\cdot\sigma_x \right)
+$$
+
+:::
+
+### CLT for Means - Tree Height
+
+Next let's explore how the CLT for means works for our data. To do this, we'll sample the data $n=30,60,\text{ and }150$ times. For each of the different sample sizes, the sample will be taken (with replacement), the mean found, and the procedure repeated 10,000 times. This will give us a good picture of the CLT for the means. 
+
+```{r CLT_M for Tree Height}
+# Repeat (replicate) finding the mean of 30 samples a total of 10,000 times
+times <- 10000
+CLT_Mean_Height_30 <- replicate(n = times,
+          mean(sample(x = tree_height$height, 
+                      size = 30, 
+                      replace = TRUE))
+)
+
+# Find the mean and sd for n=30
+mean30 <- mean(CLT_Mean_Height_30)
+sd30 <- sd(CLT_Mean_Height_30)
+
+# Repeat (replicate) finding the mean of 60 samples a total of 10,000 times
+CLT_Mean_Height_60 <- replicate(n = times,
+          mean(sample(x = tree_height$height, 
+                      size = 60, 
+                      replace = TRUE))
+)
+
+# Find the mean and sd for n=60
+mean60 <- mean(CLT_Mean_Height_60)
+sd60 <- sd(CLT_Mean_Height_60)
+
+# Repeat (replicate) finding the mean of 150 samples a total of 10,000 times
+CLT_Mean_Height_150 <- replicate(n = times,
+          mean(sample(x = tree_height$height, 
+                      size = 150, 
+                      replace = TRUE))
+)
+
+# Find the mean and sd for n=150
+mean150 <- mean(CLT_Mean_Height_150)
+sd150 <- sd(CLT_Mean_Height_150)
+
+paste()
+data.frame(n = c(30,60,150),
+           mean = c(mean30, mean60, mean150),
+           sd = c(sd30, sd60,sd150)
+) %>%
+  gt::gt(caption = "Mean and Standard Deviation for different sample sizes n")
+```
+
+::: callout-note
+#### Question
+
+What do you notice about the mean and standard deviation as the number of samples increases?
+:::
+
+Let's look at a histogram of the means as the number of samples increases:
+
+```{r Hist Mean for ns}
+# Create data frame to graph the sampled means
+CLT_M <- data.frame(
+  samples = rep(c(30,60,150), each = times),
+  means = c(CLT_Mean_Height_30, 
+                CLT_Mean_Height_60, 
+                CLT_Mean_Height_150))
+
+# Create histograms of sample means
+CLT_M %>%
+  ggplot(aes(x = means)) + 
+  geom_histogram(binwidth = .5) + 
+  facet_grid(vars(samples))
+```
+
+::: callout-note
+#### Question
+
+As $n$ changed, why did the shape of the distribution change? Use 1-2 sentences to describe what happened.
+
+Answer: 
+:::
+
+::: callout-note
+#### Question
+
+Suppose you were asked the following: "If you measure the height of 60 trees managed by the City of Pittsburgh, what is the probability that the mean height will be less than 25 feet?"
+
+Use the following function to answer the question: 
+
+```{r}
+p <- 0 # Change me!
+mean <- 0 # Change me!
+sd <- 1 # Change me!
+pnorm(p, mean, sd)
+```
+
+
+Answer: 
+:::
+
+### CLT for Sums - Tree Economic Benefits
+
+Finally let's explore how the CLT for sums works for our data. To do this, we'll again sample the data $n=30,60,\text{ and }150$ times. For each of the different sample sizes, the sample will be taken (with replacement), the *sum* found, and the procedure repeated 10,000 times. This will give us a good picture of the CLT for the sums.  
+
+```{r CLT_M for Tree Height}
+# Repeat (replicate) finding the sum of 30 samples a total of 10,000 times
+times <- 10000
+CLT_Sum_Ben_30 <- replicate(n = times,
+          mean(sample(x = tree_benefits$benefits, 
+                      size = 30, 
+                      replace = TRUE))
+)
+
+# Find the mean and sd for n=30
+mean30 <- mean(CLT_Mean_Height_30)
+sd30 <- sd(CLT_Mean_Height_30)
+
+# Repeat (replicate) finding the mean of 60 samples a total of 10,000 times
+CLT_Mean_Height_60 <- replicate(n = times,
+          mean(sample(x = tree_benefits$benefits, 
+                      size = 60, 
+                      replace = TRUE))
+)
+
+# Find the mean and sd for n=60
+mean60 <- mean(CLT_Mean_Height_60)
+sd60 <- sd(CLT_Mean_Height_60)
+
+# Repeat (replicate) finding the mean of 150 samples a total of 10,000 times
+CLT_Mean_Height_150 <- replicate(n = times,
+          mean(sample(x = tree_benefits$benefits, 
+                      size = 150, 
+                      replace = TRUE))
+)
+
+# Find the mean and sd for n=150
+mean150 <- mean(CLT_Mean_Height_150)
+sd150 <- sd(CLT_Mean_Height_150)
+
+data.frame(n = c(30,60,150),
+           mean = c(mean30, mean60, mean150),
+           sd = c(sd30, sd60,sd150)
+)
+```

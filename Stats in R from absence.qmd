@@ -1,0 +1,98 @@
+---
+title: "Descriptive Statistics"
+format: html
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+pkg_chk <- function(pkg) {
+  if(!require(pkg, character.only = TRUE, quietly = TRUE)) install.packages(pkg, quiet = TRUE)
+  
+  library(pkg, character.only = TRUE)
+}
+
+pkg_chk("ggplot2")
+pkg_chk("tidyverse")
+```
+
+
+## 2.1 - Stem and Leaf, Line Graphs, Bar Graphs
+
+### Stem and Leaf
+To create a basic stem and leaf plot, you can use the `stem` function. 
+
+```{r}
+stem(iris$Sepal.Length)
+```
+
+### Line Graph
+
+A line graph connects points of pairs of x and y values. 
+
+```{r}
+# The iris data doesn't lend itself well to line plots, a summary looks nicer
+iris_summary <- iris %>% group_by(Sepal.Length) %>%
+  summarize(n = n())
+ggplot(data = iris_summary, aes(x = Sepal.Length, y = n)) + 
+  geom_line()
+```
+
+### Bar Graph
+
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) + 
+  geom_bar()
+```
+
+## 2.2 Histograms, Frequency Polygons, and TIme Series Graphs
+
+### Histogram
+
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) + 
+  geom_histogram()
+```
+
+### Frequency Polygon
+
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) + 
+  geom_freqpoly()
+```
+
+### Time Series
+
+```{r}
+EuStockMarkets2 <- as.data.frame(EuStockMarkets) %>%
+  add_column("date" = as.numeric(time(EuStockMarkets)))
+
+ggplot(data = EuStockMarkets2, aes(x = date, y = DAX)) + 
+  geom_line()
+```
+
+## 2.3 Measures of location of the data
+
+```{r}
+# Will show first, second, and third quartiles along with min, max, and mean
+summary(iris$Sepal.Length)
+```
+```{r}
+# To find any quantile, change probs (as a decimal)
+prob <- .25
+quantile(iris$Sepal.Length, probs = prob)
+```
+
+You can find interquartile range with `IQR()`
+```{r}
+IQR(iris$Sepal.Length)
+```
+
+### Box plot
+
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) + 
+  geom_boxplot()
+```
+

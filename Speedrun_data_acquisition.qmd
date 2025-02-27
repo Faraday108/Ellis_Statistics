@@ -1,0 +1,67 @@
+---
+title: "Testing"
+format: html
+editor: source
+---
+
+## Data Acquisition
+
+```{r}
+library(httr)
+library(jsonlite)
+library(dplyr)
+
+# Step 1: Find the game ID for "Super Mario 64"
+game_search_url <- "https://www.speedrun.com/api/v1/games?name=Super%20Mario%2064"
+game_response <- GET(game_search_url)
+game_data <- fromJSON(content(game_response, as = "text"))
+
+# Extract the correct game ID
+game_name_options <- game_data$data$names$international
+game_name <- "Super Mario 64"
+index <- which(game_data$data$names$international == game_name)
+game_id <- game_data$data$id[index]
+cat("Game ID for ", game_name,": ", game_id, "\n", sep = "")
+
+# Step 2: Get the categories for this game
+categories_url <- paste0("https://www.speedrun.com/api/v1/games/", game_id, "/categories")
+categories_response <- GET(categories_url)
+categories_data <- fromJSON(content(categories_response, as = "text"))
+
+# Find the correct category ID (16-Star)
+category_name <- "16 Star"
+category_id <- categories_data$data$id[which(categories_data$data$name == category_name)]
+cat("Category ID for",category_name, category_id, "\n")
+
+# Step 3: Fetch leaderboard data
+if (length(category_id) > 0) {
+  leaderboard_url <- paste0("https://www.speedrun.com/api/v1/leaderboards/", game_id, "/category/", category_id)
+  
+  leaderboard_response <- GET(leaderboard_url)
+  leaderboard_data <- fromJSON(content(leaderboard_response, as = "text"))
+  
+  # Extract run times
+  runs <- leaderboard_data$data$runs
+
+  run_times <- data.frame(
+    place = runs$place, 
+    time_seconds = runs$run$times$primary_t)
+
+  # Display first few rows
+  print(head(run_times))
+} else {
+  cat("16-Star category not found.\n")
+}
+
+run_times %>% filter(time_seconds < 3000) %>% ggplot(aes(x = time_seconds)) + 
+  geom_histogram(bins = 30)
+```
+
+```{r}
+if(!file.exists("M64_16S.csv")) {
+  run_times %>% 
+    filter(time_seconds <= 3000) %>% 
+    readr::write_csv("M64_16S.csv")
+}
+```
+

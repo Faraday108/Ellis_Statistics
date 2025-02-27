@@ -1,0 +1,326 @@
+---
+title: "Chapter 6 Stats Lab"
+format: html
+editor: source
+execute: 
+  echo: true
+---
+
+## Instructions
+
+Work through the following prompts and respond to each question in the space following each question.\
+To submit your work render the file by clicking the blue segmented arrow at the top of this window to render to a .html. Submit the resulting "Chapter 6 Stats Lab.html" and "Chapter 6 Stats Lab_files" folder to the Google drive folder I shared.
+
+## Background: Part 1
+
+In this Lab, we will work on analyzing a provided dataset and concluding whether it seems to follow a normal distribution. To accomplish this, we will compare the empirical data to the theoretical distribution to determine if data from the experiment fits.\
+The first data set, `M64_16S.csv` is data acquired from the leaderboard of Speedrun.com on completion times for the game "Super Mario 64".
+
+### Question 1
+
+Before we start, would you expect the completion times to be normally distributed?
+
+
+## Getting Started
+
+1.  Ensure `M64_16S.csv` is in the same folder as this notebook.
+2.  Run the following code to load the dataset:
+
+```{r}
+# Load necessary libraries
+if (!require("tidyverse")) install.packages("tidyverse")
+library(readr)
+library(ggplot2)
+library(dplyr)
+
+# Read dataset (assumes it's in the same directory as the .qmd file)
+data <- read_csv("M64_16S.csv", show_col_types = FALSE)
+
+# Preview the first few rows
+head(data)
+```
+
+3.  Follow the guided exercises in this notebook
+
+## Explore the data
+
+### Histogram
+
+Before starting any analysis, it is a good idea to explore the data.
+
+First, we'll construct a histogram of completion times:
+
+```{r}
+# Creates histogram of time_seconds (completion time) and changes the y-axis to be density (makes area under bars add to 1)
+gg_hist <- data %>%
+  ggplot(aes(x = time_seconds)) + 
+  geom_histogram(aes(y = after_stat(density)), binwidth = 100) # Bin width chosen to be 100s
+
+gg_hist # display resulting plot
+```
+
+#### Question 2
+
+Does the data appear normally distributed?
+
+### Summary Statistics
+
+We can next look at the summary statistics:
+
+```{r}
+data$time_seconds %>% summary()
+```
+
+#### Question 3
+
+What is the mean completion time? What is the range of completion times?
+
+#### Question 4
+
+What is the standard deviation?
+
+```{r}
+data$time_seconds %>% sd()
+```
+
+#### Question 5
+
+Using the mean and standard deviation, what is the approximate normal distribution? $X \sim N(___,___)$
+
+## Describe the data
+
+### Empirical distribution (from the data)
+
+-   What is the interquartile range? (Recall IQR = Q3 - Q1)
+
+-   The 15th percentile is
+
+-   The 85th percentile is
+
+-   The median is
+
+-   What is the theoretical probability that a randomly chosen completion time is less than 1000s?
+
+**Code chunks to help answer prior questions:**
+
+```{r}
+# 15th percentile
+quantile(data$time_seconds, probs = .15)
+```
+
+```{r}
+# 85th percentile
+quantile()
+```
+
+```{r}
+# number of times less than 1000
+less_1000 <- sum(data$time_seconds < 1000)
+# total trials
+total <- length(data$time_seconds)
+
+# Probability of less than 1000?
+less_1000/total
+```
+
+### Theoretical Distribution
+
+Use the normal distribution with mean and standard deviation to answer the following:
+
+-   What is the inter quartile range?
+
+-   The 15th percentile:
+
+-   The 85th percentile:
+
+-   Median is:
+
+-   What is the theoretical probability that a randomly chosen completion time is less than 1000s?
+
+**Code chunks to help answer prior questions:**
+
+```{r}
+# 15th percentile
+qnorm(.15, 1337, 300)
+```
+
+```{r}
+# 85th percentile
+qnorm(p, mean, sd)
+```
+
+```{r}
+# Probability of less than 1000?
+pnorm(q, mean, sd)
+```
+
+## Conclusion
+
+Based on the prior analysis, do you think that the theory that the data is normally distributed holds up?
+
+As a final look, consider the histogram from earlier with the normal distribution we analyzed overlayed:
+
+```{r}
+gg_hist + 
+  geom_function(fun = dnorm, 
+                args = list(mean = mean(data$time_seconds), 
+                            sd = sd(data$time_seconds)), 
+                color = "red")
+```
+
+## Background: Part 2
+
+In this Lab, we will work on analyzing a provided dataset and concluding whether it seems to follow a normal distribution. To accomplish this, we will compare the empirical data to the theoretical distribution to determine if data from the experiment fits.\
+The first data set, `SOCR-HeightWeight.csv` is data acquired from Kaggle, a website that hosts data science competitions. This is a simple dataset. It contains only the height (inches) and weights (pounds) of 25,000 different humans of 18 years of age.
+
+### Question 1
+
+Before we start, would you expect the height to be normally distributed?
+
+## Getting Started
+
+1.  Ensure `SOCR-HeightWeight.csv` is in the same folder as this notebook.
+2.  Run the following code to load the dataset:
+
+```{r}
+# Load necessary libraries
+library(readr)
+library(ggplot2)
+library(dplyr)
+
+# Read dataset (assumes it's in the same directory as the .qmd file)
+data2 <- read_csv("SOCR-HeightWeight.csv",
+                  show_col_types = FALSE) %>% 
+  select("Index", "Height" = "Height(Inches)")
+
+# Preview the first few rows
+head(data2)
+```
+
+3.  Follow the guided exercises in this notebook
+
+## Explore the data
+
+### Histogram
+
+Before starting any analysis, it is a good idea to explore the data.
+
+First, we'll construct a histogram of completion times:
+
+```{r}
+# Creates histogram of time_seconds (completion time) and changes the y-axis to be density (makes area under bars add to 1)
+gg_hist2 <- data2 %>%
+  ggplot(aes(x = Height)) + 
+  geom_histogram(aes(y = after_stat(density)), binwidth = .25) # Bin width chosen to be .25in
+
+gg_hist2 # display resulting plot
+```
+
+#### Question 2
+
+Does the data appear normally distributed?
+
+### Summary Statistics
+
+We can next look at the summary statistics:
+
+```{r}
+data2$Height %>% summary()
+```
+
+#### Question 3
+
+What is the mean height? What is the range of heights?
+
+#### Question 4
+
+What is the standard deviation?
+
+```{r}
+data2$Height %>% sd()
+```
+
+#### Question 5
+
+Using the mean and standard deviation, what is the approximate normal distribution? $X \sim N(___,___)$
+
+## Describe the data
+
+### Empirical distribution (from the data)
+
+-   What is the interquartile range? (Recall IQR = Q3 - Q1)
+
+-   The 15th percentile is
+
+-   The 85th percentile is
+
+-   The median is
+
+-   What is the theoretical probability that a randomly chosen height is less than 6 feet (72 inches)?
+
+**Code chunks to help answer prior questions:**
+
+```{r}
+# 15th percentile
+quantile(data2$Height, probs = .15)
+```
+
+```{r}
+# 85th percentile
+quantile()
+```
+
+```{r}
+# number of times less than 72
+less_72 <- sum(data2$Height < 72)
+# total trials
+total <- length(data2$Height)
+
+# Probability of less than 72?
+
+```
+
+### Theoretical Distribution
+
+Use the normal distribution with mean and standard deviation to answer the following:
+
+-   What is the interquartile range?
+
+-   The 15th percentile:
+
+-   The 85th percentile:
+
+-   Median is:
+
+-   What is the theoretical probability that a randomly chosen completion time is less than 72?
+
+**Code chunks to help answer prior questions:**
+
+```{r}
+# 15th percentile
+qnorm(p, mean, sd)
+```
+
+```{r}
+# 85th percentile
+qnorm(p, mean, sd)
+```
+
+```{r}
+# Probability of less than 72?
+pnorm(q, mean, sd)
+```
+
+## Conclusion
+
+Based on the prior analysis, do you think that the theory that the data is normally distributed holds up?
+
+As a final look, consider the histogram from earlier with the normal distribution we analyzed overlayed:
+
+```{r}
+gg_hist2 + 
+  geom_function(fun = dnorm, 
+                args = list(mean = mean(data2$Height), 
+                            sd = sd(data2$Height)), 
+                color = "red")
+```

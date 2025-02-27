@@ -1,0 +1,19 @@
+---
+title: "Basic Functionality"
+format: html
+---
+
+## Basic Functions
+You can use R as a basic calculator 
+
+```{r}
+dataset <- data.frame(age = c(17, 17, 17, 17, 34, 18, 15, 17, 17, 17, 17, 17, 85, 21, 58))
+```
+
+## Install packages
+
+```{r}
+if (!require(c("tidyverse"))) install.packages("tidyverse")
+library(tidyverse)
+```
+

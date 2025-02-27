@@ -1,0 +1,145 @@
+---
+title: "6.2 Notebook"
+format: html
+editor: source
+---
+
+## Calculation of Probabilities
+
+Probabilities of normal distributions are calculated using technology.
+
+### P(X \< x) or P(X \> x)
+
+In R to find $P(X < x)$ (the probability of a value less than a particular number $X$) you can use the `pnorm(value, mean = 0, standard deviation = 1, lower.tail = TRUE)`.\
+This function has a required argument of value, a particular x-value from the distribution we are interested in, a default mean of 0, a default standard deviation of 1, and a default to the lower tail.
+
+To find $P(X > x)$ (the probability of a value greater than a particular number $X$), you can either do $1 - P(X < x)$ with default value of `lower.tail` or `pnorm(value, mean, standard deviation, lower.tail = FALSE)`
+
+### Finding quantile
+
+To find quantiles, that is the $x-value$ below which the proportion $p$ of the distribution falls, use `qnorm(probability, mean = 0, sd = 1, lower.tail = TRUE)`
+
+### Q1
+
+If the area to the left is 0.0228, what is the area to the right?
+
+```{r}
+left <- 0.0288
+# right
+
+```
+
+### Q2
+
+The final exam scores in a statistics class were normally distributed with a mean of 63 and a standard deviation of 5.
+
+a.  Find the probability that a randomly selected student scored more than 65% on the exam
+
+```{r}
+# Pick values of p, m, sd, lower.tail appropriate to the question
+# Find P(x > 65)
+p <- 0 # value
+m <- 0 # mean
+sd <- 1 # standard deviation
+lower.tail <- FALSE # below x-value, or above?
+pnorm(p, m, sd, lower.tail = lower.tail)
+```
+
+b.  Find the probability that a randomly selected student scored less than 85% on the exam.
+
+```{r}
+# Pick values of p, m, sd, lower.tail appropriate to the question
+# Find P(x < 85)
+p <- 85 # value
+m <- 63 # mean
+sd <- 5 # standard deviation
+lower.tail <- TRUE # below x-value, or above?
+pnorm(p, m, sd, lower.tail = lower.tail)
+```
+
+c.  Find the 90th percentile, that is the x-value below which 90% of scores fall.
+
+```{r}
+# Pick values of p, m, sd, lower.tail appropriate to the question
+p <- .9 # value
+m <- 63 # mean
+sd <- 5 # standard deviation
+lower.tail <- TRUE # below x-value, or above?
+qnorm(p, m, sd, lower.tail = lower.tail)
+```
+
+c.  Find the 70th percentile, that is the x-value below which 70% of scores fall.
+
+```{r}
+# Pick values of p, m, sd, lower.tail appropriate to the question
+p <- .7 # value
+m <- 63 # mean
+sd <- 5 # standard deviation
+lower.tail <- TRUE # below x-value, or above?
+qnorm(p, m, sd, lower.tail = lower.tail)
+```
+
+### Q3
+
+The golf scores for a school team were normally distributed with a mean of 68 and a standard deviation of 3. Find the probability that a randomly selected golfer scored less than 65.
+
+```{r}
+# Pick values of p, m, sd, lower.tail appropriate to the question
+p <- 0 # value
+m <- 0 # mean
+sd <- 1 # standard deviation
+lower.tail <- TRUE # below x-value, or above?
+pnorm(p, m, sd, lower.tail = lower.tail)
+```
+
+### Q4
+
+A personal computer is used for a myraid of things. Suppose the average number of hours a household personal computer is used for entertainment is 2 hours per day. Assume times for entertainment are normally distributed and the standard deviation for the times is .5 hours.
+
+a.  Find the probability that a household computer is used for entertainment between 1.8 and 2.75 hours per day.
+
+```{r}
+# Pick values of x1, x2, mean, sd, appropriate to the question
+p1 <- pnorm(x1, mean, sd) # probability less than 1.8
+p2 <- pnorm(x2, mean, sd) # probability less than 2.75
+
+# overall probability?
+```
+
+b.  Find the maximum number of hours per day that the bottom quartile of households uses a personal computer for entertainment
+
+```{r}
+# Pick values of p, mean, sd appropriate to the question
+qnorm(p, mean, sd)
+```
+
+### Q5
+
+The golf scores for a school team were normally distributed with a mean of 68 and a standard deviation of 3. Find the probability that a golfer scored between 66 and 70.
+
+```{r}
+# Find what function we need and pick appropriate variable values
+```
+
+### Q6
+
+In the United States smartphone users between the ages of 13 and 55+ approximately follows a normal distribution with approximate mean and standard deviation of 36.9 years and 13.9 years, respectively.
+
+a.  Determine the probability that a random smartphone user in the age range provided is between 23 and 64.7 years old.
+
+```{r}
+# Find what function we need and pick appropriate variable values
+
+```
+
+b.  Determine the probability that a randomly selected smartphone user in the age range provided is at most 50.8 years old.
+
+```{r}
+# Find what function we need and pick appropriate variable values
+```
+
+c.  Find the 80th percentile of this distribution.
+
+```{r}
+# Find what function we need and pick appropriate variable values
+```

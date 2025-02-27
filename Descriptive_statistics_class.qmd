@@ -1,0 +1,89 @@
+---
+title: "Descriptive Statistics"
+format: html
+---
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+pkg_chk <- function(pkg) {
+  if(!require(pkg, character.only = TRUE, quietly = TRUE)) install.packages(pkg, quiet = TRUE)
+  
+  library(pkg, character.only = TRUE)
+}
+
+pkg_chk("ggplot2")
+pkg_chk("tidyverse")
+```
+## Useful RStudio things
+Insert code chunk: `ctrl + alt + i` (Windows)  
+Insert code chunk: `cmd + option + i` (MacOS)  
+Run line cursor is on: `ctrl + enter` (Windows)  
+Run line cursor is on: `cmd + enter` (MacOS)  
+Run code chunk: `ctrl + shift + enter` (Windows)
+Run code chunk: `cmd + shift + enter` (MacOS)
+Render - on menu bar at top of this window, will render the document to file (html is default)
+
+
+## 2.1 - Stem and Leaf, Line Graphs, Bar Graphs
+
+### Stem and Leaf
+
+```{r}
+stem(iris$Sepal.Length)
+```
+
+### Frequency Polygon
+
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) +
+  geom_freqpoly()
+```
+
+### Bar graph
+
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) + 
+  geom_bar()
+```
+
+### Histogram
+
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) + 
+  geom_histogram()
+```
+
+## 2.3 Measures of Location in Data
+
+### Quartiles
+
+```{r}
+summary(iris$Sepal.Length)
+```
+### Other quantiles
+```{r}
+quantile(iris$Sepal.Length, probs = .75)
+```
+
+### IQR
+
+```{r}
+IQR(iris$Sepal.Length)
+
+quantile(iris$Sepal.Length, probs = .25)
+```
+
+### Boxplot
+```{r}
+library(ggplot2)
+ggplot(data = iris, aes(x = Sepal.Length)) + 
+  geom_boxplot(aes(color = Species))
+```
+
+### standard deviation
+```{r}
+sd(iris$Sepal.Length)
+```
+

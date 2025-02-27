@@ -1,0 +1,64 @@
+---
+title: "Descriptive Statistics"
+format: html
+---
+
+## Stem and Leaf
+
+```{r}
+stem(iris$Sepal.Length)
+```
+## Frequency Polygon
+
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) +
+  geom_freqpoly()
+```
+
+## Bar graph
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) + 
+  geom_bar()
+```
+
+## Histogram
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) + 
+  geom_histogram()
+```
+
+### Time Series
+
+```{r}
+EuStockMarkets2 <- as.data.frame(EuStockMarkets) %>%
+  add_column("date" = as.numeric(time(EuStockMarkets)))
+
+ggplot(data = EuStockMarkets2, aes(x = date, y = DAX)) + 
+  geom_line()
+```
+
+## 2.3 Measures of location of the data
+
+```{r}
+# Will show first, second, and third quartiles along with min, max, and mean
+summary(iris$Sepal.Length)
+```
+
+```{r}
+# To find any quantile, change probs (as a decimal)
+prob <- .25
+quantile(iris$Sepal.Length, probs = prob)
+```
+
+You can find interquartile range with `IQR()`
+
+```{r}
+IQR(iris$Sepal.Length)
+```
+
+### Box plot
+
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) + 
+  geom_boxplot()
+```

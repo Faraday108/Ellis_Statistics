@@ -1,0 +1,84 @@
+---
+title: "Introduction to R and RStudio"
+author: "Nathan Young"
+format: html
+date: "2024-09-17"
+---
+
+## 1. Introduction to R
+
+R is a programming language used for statistical computing and data analysis. It is widely used in academia, research, and industry. R provides various libraries and tools for data visualization, machine learning, and more.
+
+R allows you to analyze data, create visualizations, and apply statistical techniques efficiently, which will be essential in our statistics class.
+
+## 2. What is RStudio?
+
+RStudio is an integrated development environment (IDE) for R. It provides a user-friendly interface to write, test, and run R code. RStudio includes several useful components that make working with R easier:
+
+- **Console:** Where you run R commands interactively.
+- **Environment Pane:** Displays variables and data loaded into memory.
+- **Plots Pane:** Visualizes your data and displays graphs.
+- **Script Editor:** Write and save R code for later use.
+
+Using RStudio, you can write R scripts, test your code, and visualize results all in one place.
+
+## 3. Installing R and RStudio
+
+To start using R, you'll need to install both R and RStudio.
+
+### Steps to install:
+
+1. Download R from [The Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/). Choose the appropriate version for your operating system (Windows, macOS, or Linux).
+2. Download and install RStudio from [RStudio's website](https://rstudio.com/products/rstudio/download/). Once installed, open RStudio, and you'll be ready to write R code.
+
+## 4. Basic R Commands
+
+Let’s try some basic R commands in the RStudio Console. These commands will introduce you to simple calculations and variable assignments.
+
+```{r}
+# Basic Math
+2 + 2
+sqrt(16)
+
+# Assigning variables
+x <- 5
+y <- 10
+z <- x + y
+
+# Print the result
+print(z)
+```
+
+
+# 5. Working with data in R 
+One of the key strengths of R is handling and analyzing data. Let’s create a small dataset (called a "vector") and perform some basic statistical calculations.
+
+```{r}
+# Create a vector of numbers
+data <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+# Calculate the mean
+mean(data)
+
+# Calculate the standard deviation
+sd(data)
+
+```
+
+This is the foundation of working with data in R. Later, we will work with larger datasets and learn advanced techniques.
+
+## 7. Using R for Statistics
+In our statistics class, you'll need to analyze data and summarize key metrics like mean, median, and standard deviation. R makes this easy.
+
+### Example: Summary Statistics
+R includes several built-in datasets that we can use for practice. One such dataset is mtcars, which contains data about cars and their specifications.
+
+```{r}
+# Load the 'mtcars' dataset
+data(mtcars)
+
+# Get summary statistics of the dataset
+summary(mtcars)
+```
+
+This command provides an overview of the dataset, showing minimum, maximum, mean, and other statistics for each variable in the dataset.
