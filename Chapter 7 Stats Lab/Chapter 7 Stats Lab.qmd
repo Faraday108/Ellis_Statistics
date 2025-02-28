@@ -6,7 +6,6 @@ format:
     code-summary: "Show the code"
 cache: true
 editor: visual
-theme: darkly
 ---
 
 ## Instructions
@@ -87,6 +86,8 @@ How many trees have a height of 0?
 
 Depending on the exact question you are trying to answer we may want to include trees with height 0 or exclude them. For this lab, lets narrow the data to only include trees with a recorded height. Note that if this were a report or scientific paper, you would have to fully disclose your selection criteria and reasoning behind it.
 
+In this set, `r nrow(dplyr::filter(trees, height == 0 & common_name == "Stump"))` trees with height 0 are stumps, but also `r nrow(dplyr::filter(trees, height == 0 & condition == "Good"))` trees are listed as having height 0 but condition "Good". Given the unclear nature of trees of height 0, a reasonable choice for our class exercise is to rephrase questions about tree height to be about "trees with a recorded height".
+
 ```{r Subset trees with height}
 # Remove trees with height == 0
 tree_height <- tree_height %>% filter(height != 0)
@@ -99,7 +100,7 @@ ggplot(data = tree_height, aes(x = height)) +
 ::: callout-note
 #### Question
 
-Do tree heights in this data set appear to be normally distributed?
+Does the height of trees with recorded heights in this data set appear to be normally distributed?
 :::
 
 ### Tree Economic Benefit value
@@ -132,17 +133,16 @@ $$
 :::
 
 ::: callout-tip
-Central Limit Theorem of Sums: 
+Central Limit Theorem of Sums:
 
 $$
 \Sigma{X} \sim N \left(n\cdot\mu_x, \sqrt{n}\cdot\sigma_x \right)
 $$
-
 :::
 
 ### CLT for Means - Tree Height
 
-Next let's explore how the CLT for means works for our data. To do this, we'll sample the data $n=30,60,\text{ and }150$ times. For each of the different sample sizes, the sample will be taken (with replacement), the mean found, and the procedure repeated 10,000 times. This will give us a good picture of the CLT for the means. 
+Next let's explore how the CLT for means works for our data. To do this, we'll sample the data $n=30,60,\text{ and }150$ times. For each of the different sample sizes, the sample will be taken (with replacement), the mean found, and the procedure repeated 10,000 times. This will give us a good picture of the CLT for the means.
 
 ```{r CLT_M for Tree Height}
 # Repeat (replicate) finding the mean of 30 samples a total of 10,000 times
@@ -219,15 +219,15 @@ CLT_M %>%
 
 As $n$ changed, why did the shape of the distribution change? Use 1-2 sentences to describe what happened.
 
-Answer: 
+Answer:
 :::
 
 ::: callout-note
 #### Question
 
-Suppose you were asked the following: "If you measure the height of 60 trees managed by the City of Pittsburgh, what is the probability that the mean height will be less than 25 feet?"
+Suppose you were asked the following: "If you sample the height of 60 trees managed by the City of Pittsburgh (for which heights are recorded), what is the probability that the mean height will be less than 25 feet?"
 
-Use the following function to answer the question: 
+Use the following function to answer the question:
 
 ```{r}
 p <- 0 # Change me!
@@ -236,15 +236,14 @@ sd <- 1 # Change me!
 pnorm(p, mean, sd)
 ```
 
-
-Answer: 
+Answer:
 :::
 
 ### CLT for Sums - Tree Economic Benefits
 
-Finally let's explore how the CLT for sums works for our data. To do this, we'll again sample the data $n=30,60,\text{ and }150$ times. For each of the different sample sizes, the sample will be taken (with replacement), the *sum* found, and the procedure repeated 10,000 times. This will give us a good picture of the CLT for the sums.  
+Finally let's explore how the CLT for sums works for our data. To do this, we'll again sample the data $n=30,60,\text{ and }150$ times. For each of the different sample sizes, the sample will be taken (with replacement), the *sum* found, and the procedure repeated 10,000 times. This will give us a good picture of the CLT for the sums.
 
-```{r CLT_M for Tree Height}
+```{r CLT_S for Tree Height}
 # Repeat (replicate) finding the sum of 30 samples a total of 10,000 times
 times <- 10000
 CLT_Sum_Ben_30 <- replicate(n = times,
@@ -289,7 +288,7 @@ data.frame(n = c(30,60,150),
 ::: callout-note
 #### Question
 
-What do you notice about the mean and standard deviation as the number of samples increases? 
+What do you notice about the mean and standard deviation as the number of samples increases?
 :::
 
 Let's look at a histogram of the means as the number of samples increases:
@@ -314,15 +313,15 @@ CLT_S %>%
 
 As $n$ changed, why did the shape of the distribution change? Use 1-2 sentences to describe what happened.
 
-Answer: 
+Answer:
 :::
 
 ::: callout-note
 #### Question
 
-Suppose you were asked the following: "If you add the estimated benefit value of a random group of 150 trees in Pittsburgh, what is the probability that their overall value is greater than $17,000?"
+Suppose you were asked the following: "If you add the estimated benefit value of a random group of 150 trees in Pittsburgh, what is the probability that their overall value is greater than \$17,000?"
 
-Use the following function to answer the question: 
+Use the following function to answer the question:
 
 ```{r}
 p <- 0 # Change me!
@@ -332,6 +331,5 @@ lower <- FALSE
 pnorm(p, mean, sd, lower.tail = lower)
 ```
 
-
-Answer: 
+Answer:
 :::
