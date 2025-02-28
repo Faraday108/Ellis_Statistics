@@ -8,8 +8,11 @@ execute:
 
 ## Instructions
 
-Work through the following prompts and respond to each question in the space following each question.\
-To submit your work render the file by clicking the blue segmented arrow at the top of this window to render to a .html. Submit the resulting "Chapter 6 Stats Lab.html" and "Chapter 6 Stats Lab_files" folder to the Google drive folder I shared.
+Read through the following document, running each code chunk (and editing variables within them) as you encounter them. Use the results of the code chunks to answer the questions.  
+
+To submit your work: 
+1. Render the file by clicking the blue segmented arrow at the top of this window to render to a .html  
+2. Submit the resulting "Chapter 6 Stats Lab.html" and "Chapter 6 Stats Lab_files" folder to the Google drive folder I shared.
 
 ## Background: Part 1
 
@@ -18,9 +21,10 @@ The first data set, `M64_16S.csv` is data acquired from the leaderboard of Speed
 
 ::: callout-note
 #### Question 1.1
+
 Before we start, would you expect the completion times to be normally distributed?
 
-Answer: 
+Answer:
 :::
 
 ## Getting Started
@@ -82,8 +86,7 @@ data$time_seconds %>% summary()
 
 From the summary above, what is the mean completion time? What is the range of completion times?
 
-Answer: 
-
+Answer:
 :::
 
 ::: callout-note
@@ -95,21 +98,18 @@ Using the code block below, what is the standard deviation?
 data$time_seconds %>% sd()
 ```
 
-Answer: 
-
+Answer:
 :::
 
 ::: callout-note
 #### Question 1.5
 
-Using the mean and standard deviation, what is the approximate normal distribution? 
+Using the mean and standard deviation, what is the approximate normal distribution?
 
 Answer: $X \sim N(___,___)$
-
 :::
 
 ## Describe the data
-
 
 ### Empirical distribution (from the data)
 
@@ -124,6 +124,11 @@ Answer: $X \sim N(___,___)$
 -   What is the theoretical probability that a randomly chosen completion time is less than 1000s?
 
 **Code chunks to help answer prior questions:**
+
+```{r}
+x <- data$time_seconds
+IQR(x)
+```
 
 ```{r}
 # 15th percentile
@@ -170,6 +175,19 @@ Use the normal distribution with mean and standard deviation to answer the follo
 **Code chunks to help answer prior questions:**
 
 ```{r}
+# Interquartile range
+mean <- 0 # CHANGE ME!!
+sd <- 1 # CHANGE ME!!
+
+upper_quartile <- qnorm(.75, mean, sd)
+lower_quartile <- qnorm(.25, mean, sd)
+
+# IQR: 
+upper_quartile - lower_quartile
+```
+
+
+```{r}
 # 15th percentile
 p <- .5 # CHANGE ME!!
 mean <- 0 # CHANGE ME!!
@@ -196,9 +214,9 @@ pnorm(q, mean, sd)
 ## Conclusion
 
 ::: callout-note
-Based on the prior analysis, do you think that the theory that the data is normally distributed holds up? Compare the calculated mean, 15/85th percentiles, probability calculation between the empirical data and theoretical distribution. 
+Based on the prior analysis, do you think that the theory that the data is normally distributed holds up? Compare the calculated mean, 15/85th percentiles, probability calculation between the empirical data and theoretical distribution.
 
-Answer: 
+Answer:
 :::
 
 As a final look, consider the histogram from earlier with the normal distribution we analyzed on top:
@@ -221,7 +239,7 @@ The first data set, `SOCR-HeightWeight.csv` is data acquired from Kaggle, a webs
 
 Before we start, would you expect the height to be normally distributed?
 
-Answer: 
+Answer:
 :::
 
 ## Getting Started
@@ -284,7 +302,7 @@ data2$Height %>% summary()
 
 From the summary above what is the mean height? What is the range of heights?
 
-Answer: 
+Answer:
 :::
 
 ::: callout-note
@@ -296,17 +314,15 @@ What is the standard deviation?
 data2$Height %>% sd()
 ```
 
-Answer: 
+Answer:
 :::
 
 ::: Callout-note
-
 #### Question 2.5
 
-Using the mean and standard deviation, what is the approximate normal distribution? 
+Using the mean and standard deviation, what is the approximate normal distribution?
 
 Answer: $X \sim N(___,___)$
-
 :::
 
 ## Describe the data
@@ -324,6 +340,11 @@ Answer: $X \sim N(___,___)$
 -   What is the theoretical probability that a randomly chosen height is less than 6 feet (72 inches)?
 
 **Code chunks to help answer prior questions:**
+
+```{r}
+x <- data$time_seconds
+IQR(x)
+```
 
 ```{r}
 # 15th percentile
@@ -363,11 +384,23 @@ Use the normal distribution with mean and standard deviation to answer the follo
 
 -   The 85th percentile:
 
--   Median is:
+-   Mean is:
 
 -   What is the theoretical probability that a randomly chosen completion time is less than 72?
 
 **Code chunks to help answer prior questions:**
+
+```{r}
+# Interquartile range
+mean <- 0 # CHANGE ME!!
+sd <- 1 # CHANGE ME!!
+
+upper_quartile <- qnorm(.75, mean, sd)
+lower_quartile <- qnorm(.25, mean, sd)
+
+# IQR: 
+upper_quartile - lower_quartile
+```
 
 ```{r}
 # 15th percentile
@@ -396,9 +429,9 @@ pnorm(q, mean, sd)
 ## Conclusion
 
 ::: callout-note
-Based on the prior analysis, do you think that the theory that the data is normally distributed holds up? Compare the calculated mean, 15/85th percentiles, probability calculation between the empirical data and theoretical distribution. 
+Based on the prior analysis, do you think that the theory that the data is normally distributed holds up? Compare the calculated mean, 15/85th percentiles, probability calculation between the empirical data and theoretical distribution.
 
-Answer: 
+Answer:
 :::
 
 As a final look, consider the histogram from earlier with the normal distribution we analyzed overlayed:

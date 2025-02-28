@@ -179,12 +179,16 @@ CLT_Mean_Height_150 <- replicate(n = times,
 mean150 <- mean(CLT_Mean_Height_150)
 sd150 <- sd(CLT_Mean_Height_150)
 
-paste()
+if(!require(gt, quietly = TRUE)) {
+  install.packages("gt")
+  require(gt)
+}
+
 data.frame(n = c(30,60,150),
            mean = c(mean30, mean60, mean150),
            sd = c(sd30, sd60,sd150)
 ) %>%
-  gt::gt(caption = "Mean and Standard Deviation for different sample sizes n")
+  gt::gt(caption = "Mean and Standard Deviation of Mean for different sample sizes n")
 ```
 
 ::: callout-note
@@ -244,39 +248,90 @@ Finally let's explore how the CLT for sums works for our data. To do this, we'll
 # Repeat (replicate) finding the sum of 30 samples a total of 10,000 times
 times <- 10000
 CLT_Sum_Ben_30 <- replicate(n = times,
-          mean(sample(x = tree_benefits$benefits, 
+          sum(sample(x = tree_benefits$benefits, 
                       size = 30, 
                       replace = TRUE))
 )
 
 # Find the mean and sd for n=30
-mean30 <- mean(CLT_Mean_Height_30)
-sd30 <- sd(CLT_Mean_Height_30)
+mean30 <- mean(CLT_Sum_Ben_30)
+sd30 <- sd(CLT_Sum_Ben_30)
 
 # Repeat (replicate) finding the mean of 60 samples a total of 10,000 times
-CLT_Mean_Height_60 <- replicate(n = times,
-          mean(sample(x = tree_benefits$benefits, 
+CLT_Sum_Ben_60 <- replicate(n = times,
+          sum(sample(x = tree_benefits$benefits, 
                       size = 60, 
                       replace = TRUE))
 )
 
 # Find the mean and sd for n=60
-mean60 <- mean(CLT_Mean_Height_60)
-sd60 <- sd(CLT_Mean_Height_60)
+mean60 <- mean(CLT_Sum_Ben_60)
+sd60 <- sd(CLT_Sum_Ben_60)
 
 # Repeat (replicate) finding the mean of 150 samples a total of 10,000 times
-CLT_Mean_Height_150 <- replicate(n = times,
-          mean(sample(x = tree_benefits$benefits, 
+CLT_Sum_Ben_150 <- replicate(n = times,
+          sum(sample(x = tree_benefits$benefits, 
                       size = 150, 
                       replace = TRUE))
 )
 
 # Find the mean and sd for n=150
-mean150 <- mean(CLT_Mean_Height_150)
-sd150 <- sd(CLT_Mean_Height_150)
+mean150 <- mean(CLT_Sum_Ben_150)
+sd150 <- sd(CLT_Sum_Ben_150)
 
 data.frame(n = c(30,60,150),
-           mean = c(mean30, mean60, mean150),
-           sd = c(sd30, sd60,sd150)
-)
+           sum_means = c(mean30, mean60, mean150),
+           sum_sd = c(sd30, sd60,sd150)
+) %>%
+  gt::gt(caption = "Mean and Standard Deviation of Sum for different sample sizes n")
 ```
+
+::: callout-note
+#### Question
+
+What do you notice about the mean and standard deviation as the number of samples increases? 
+:::
+
+Let's look at a histogram of the means as the number of samples increases:
+
+```{r Hist Sums for ns}
+# Create data frame to graph the sampled means
+CLT_S <- data.frame(
+  samples = rep(c(30,60,150), each = times),
+  sums = c(CLT_Sum_Ben_30, 
+                CLT_Sum_Ben_60, 
+                CLT_Sum_Ben_150))
+
+# Create histograms of sample means
+CLT_S %>%
+  ggplot(aes(x = sums)) + 
+  geom_histogram(binwidth = 100) + 
+  facet_grid(vars(samples))
+```
+
+::: callout-note
+#### Question
+
+As $n$ changed, why did the shape of the distribution change? Use 1-2 sentences to describe what happened.
+
+Answer: 
+:::
+
+::: callout-note
+#### Question
+
+Suppose you were asked the following: "If you add the estimated benefit value of a random group of 150 trees in Pittsburgh, what is the probability that their overall value is greater than $17,000?"
+
+Use the following function to answer the question: 
+
+```{r}
+p <- 0 # Change me!
+mean <- 0 # Change me!
+sd <- 1 # Change me!
+lower <- FALSE
+pnorm(p, mean, sd, lower.tail = lower)
+```
+
+
+Answer: 
+:::
