@@ -8,10 +8,9 @@ execute:
 
 ## Instructions
 
-Read through the following document, running each code chunk (and editing variables within them) as you encounter them. Use the results of the code chunks to answer the questions.  
+Read through the following document, running each code chunk (and editing variables within them) as you encounter them. Use the results of the code chunks to answer the questions.
 
-To submit your work: 
-1. Render the file by clicking the blue segmented arrow at the top of this window to render to a .html  
+To submit your work: 1. Render the file by clicking the blue segmented arrow at the top of this window to render to a .html\
 2. Submit the resulting "Chapter 6 Stats Lab.html" and "Chapter 6 Stats Lab_files" folder to the Google drive folder I shared.
 
 ## Background: Part 1
@@ -185,7 +184,6 @@ lower_quartile <- qnorm(.25, mean, sd)
 # IQR: 
 upper_quartile - lower_quartile
 ```
-
 
 ```{r}
 # 15th percentile
