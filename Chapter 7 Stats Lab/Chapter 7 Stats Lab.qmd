@@ -4,14 +4,15 @@ format:
   html:
     code-fold: true
     code-summary: "Show the code"
-cache: true
 editor: visual
 ---
 
 ## Instructions
 
-Work through the following prompts and respond to each question in the space following each question.\
-To submit your work render the file by clicking the blue segmented arrow at the top of this window to render to a .html. Submit the resulting "Chapter 7 Stats Lab.html" and "Chapter 7 Stats Lab_files" folder to the Google drive folder I shared.
+Read through the following document, running each code chunk (and editing variables within them) as you encounter them. Use the results of the code chunks to answer the questions.
+
+To submit your work: 1. Render the file by clicking the blue segmented arrow at the top of this window to render to a .html\
+2. Submit the resulting "Chapter 7 Stats Lab.html" and "Chapter 7 Stats Lab_files" folder to the Google drive folder I shared.
 
 ## Background
 
@@ -28,6 +29,11 @@ if(!require(tidyverse, quietly = TRUE)) {
   require(tidyverse)
 }
 
+if(!require(gt, quietly = TRUE)) {
+  install.packages("gt")
+  require(gt)
+}
+
 # Check if data has already been downloaded, download if not. 
 if(!file.exists("trees.csv")) {
   download.file("https://data.wprdc.org/datastore/dump/1515a93c-73e3-4425-9b35-1cd11b2196da", "./trees.csv")
@@ -36,13 +42,8 @@ if(!file.exists("trees.csv")) {
 # Check if data has been loaded to RStudio, load if not
 if(!exists("Pittsburgh_trees")) {
   # Load data file
-  trees <- read.csv("trees.csv")
-  # Select height data (ignore NA values)
-  tree_height <- data.frame(
-    height = trees$height[!is.na(trees$height)])
-  # Select estimated $ benefit data (ignore NA values)
-  tree_benefits <- data.frame(
-    benefits = trees$overall_benefits_dollar_value[!is.na(trees$overall_benefits_dollar_value)])
+  trees <- read.csv("trees.csv", stringsAsFactors = TRUE) %>%
+    rename(benefits = overall_benefits_dollar_value)
 }
 ```
 
@@ -61,7 +62,7 @@ if(!require(ggplot2, quietly = TRUE)) {
   require(ggplot2)
 }
 
-ggplot(data = tree_height, aes(x = height)) + 
+ggplot(data = trees, aes(x = height)) + 
   geom_histogram(binwidth = 5)
 ```
 
@@ -72,10 +73,11 @@ There seems to be something strange going on, there are a lot of trees with a lo
 From the graph, the strange spike in low heights seems to be less than 10, so let's look at a summary of just those values.
 
 ```{r Low Height Summary}
-tree_height %>%
+trees %>%
   filter(height < 10) %>% # Look only at heights less than 10
   group_by(height) %>% # Group by distinct heights
   summarize(n = n()) # Count number of each distinct height
+
 ```
 
 ::: callout-note
@@ -86,14 +88,26 @@ How many trees have a height of 0?
 
 Depending on the exact question you are trying to answer we may want to include trees with height 0 or exclude them. For this lab, lets narrow the data to only include trees with a recorded height. Note that if this were a report or scientific paper, you would have to fully disclose your selection criteria and reasoning behind it.
 
-In this set, `r nrow(dplyr::filter(trees, height == 0 & common_name == "Stump"))` trees with height 0 are stumps, but also `r nrow(dplyr::filter(trees, height == 0 & condition == "Good"))` trees are listed as having height 0 but condition "Good". Given the unclear nature of trees of height 0, a reasonable choice for our class exercise is to rephrase questions about tree height to be about "trees with a recorded height".
+In this set, I quickly explored other possible explanations:
+
+```{r}
+# Number of trees with height 0 and common_name "Stump"
+stump_h0 <- nrow(filter(trees, height == 0 & common_name == "Stump"))
+
+# Number of trees with height 0 that are listed in "Good" condition
+good_h0 <- nrow(filter(trees, height == 0 & condition == "Good"))
+
+paste("There are", stump_h0, "trees with that are listed as height 0 and common_name 'Stump' as well as", good_h0, "trees that are listed as height 0 but in 'Good' condition")
+```
+
+Given the unclear nature of trees of height 0, a reasonable choice for our class exercise is to rephrase questions about tree height to be about "trees with a recorded height".
 
 ```{r Subset trees with height}
 # Remove trees with height == 0
-tree_height <- tree_height %>% filter(height != 0)
+trees2 <- trees %>% filter(height != 0)
 
 # Check histogram
-ggplot(data = tree_height, aes(x = height)) + 
+ggplot(data = trees2, aes(x = height)) + 
   geom_histogram(binwidth = 5)
 ```
 
@@ -108,7 +122,7 @@ Does the height of trees with recorded heights in this data set appear to be nor
 Let's also look at the distribution of estimated tree benefit value by constructing another histogram:
 
 ```{r Benefit Histogram}
-ggplot(data = tree_benefits, aes(x = benefits)) + 
+ggplot(data = trees, aes(x = benefits)) + 
   geom_histogram(binwidth = 20)
 ```
 
@@ -122,7 +136,7 @@ Do tree economic benefits in this data set appear to be normally distributed?
 
 ## Central Limit Theorem (CLT)
 
-Recall that the CLT says that the number of samples depends on whether the *original population* is normally distributed. Since neither of these are normally distributed, we should pick sample sizes of $n = 30$ or larger.
+Recall that the CLT says that the selected sample size depends on whether the *original population* is normally distributed. Since neither of these are normally distributed, we should pick sample sizes of $n = 30$ or larger.
 
 ::: callout-tip
 Central Limit Theorem of Means:
@@ -148,7 +162,7 @@ Next let's explore how the CLT for means works for our data. To do this, we'll s
 # Repeat (replicate) finding the mean of 30 samples a total of 10,000 times
 times <- 10000
 CLT_Mean_Height_30 <- replicate(n = times,
-          mean(sample(x = tree_height$height, 
+          mean(sample(x = trees2$height, 
                       size = 30, 
                       replace = TRUE))
 )
@@ -156,10 +170,13 @@ CLT_Mean_Height_30 <- replicate(n = times,
 # Find the mean and sd for n=30
 mean30 <- mean(CLT_Mean_Height_30)
 sd30 <- sd(CLT_Mean_Height_30)
+cat("Mean of 30 samples: ", mean30, "\n", "Standard deviation of 30 samples: ", sd30, sep = "")
+```
 
+```{r}
 # Repeat (replicate) finding the mean of 60 samples a total of 10,000 times
 CLT_Mean_Height_60 <- replicate(n = times,
-          mean(sample(x = tree_height$height, 
+          mean(sample(x = trees2$height, 
                       size = 60, 
                       replace = TRUE))
 )
@@ -167,10 +184,13 @@ CLT_Mean_Height_60 <- replicate(n = times,
 # Find the mean and sd for n=60
 mean60 <- mean(CLT_Mean_Height_60)
 sd60 <- sd(CLT_Mean_Height_60)
+cat("Mean of 60 samples: ", mean60, "\n", "Standard deviation of 60 samples: ", sd60, sep = "")
+```
 
+```{r}
 # Repeat (replicate) finding the mean of 150 samples a total of 10,000 times
 CLT_Mean_Height_150 <- replicate(n = times,
-          mean(sample(x = tree_height$height, 
+          mean(sample(x = trees2$height, 
                       size = 150, 
                       replace = TRUE))
 )
@@ -179,25 +199,16 @@ CLT_Mean_Height_150 <- replicate(n = times,
 mean150 <- mean(CLT_Mean_Height_150)
 sd150 <- sd(CLT_Mean_Height_150)
 
-if(!require(gt, quietly = TRUE)) {
-  install.packages("gt")
-  require(gt)
-}
-
-data.frame(n = c(30,60,150),
-           mean = c(mean30, mean60, mean150),
-           sd = c(sd30, sd60,sd150)
-) %>%
-  gt::gt(caption = "Mean and Standard Deviation of Mean for different sample sizes n")
+cat("Mean of 150 samples: ", mean150, "\n", "Standard deviation of 150 samples: ", sd150, sep = "")
 ```
 
 ::: callout-note
 #### Question
 
-What do you notice about the mean and standard deviation as the number of samples increases?
+What do you notice about the mean and standard deviation as sample size increases?
 :::
 
-Let's look at a histogram of the means as the number of samples increases:
+Let's look at a histogram of the means as sample size increases:
 
 ```{r Hist Mean for ns}
 # Create data frame to graph the sampled means
@@ -247,51 +258,52 @@ Finally let's explore how the CLT for sums works for our data. To do this, we'll
 # Repeat (replicate) finding the sum of 30 samples a total of 10,000 times
 times <- 10000
 CLT_Sum_Ben_30 <- replicate(n = times,
-          sum(sample(x = tree_benefits$benefits, 
+          sum(sample(x = trees2$benefits, 
                       size = 30, 
                       replace = TRUE))
 )
 
 # Find the mean and sd for n=30
-mean30 <- mean(CLT_Sum_Ben_30)
-sd30 <- sd(CLT_Sum_Ben_30)
+mean30 <- mean(CLT_Sum_Ben_30, na.rm = T)
+sd30 <- sd(CLT_Sum_Ben_30, na.rm = T)
+cat("Mean sum of 30 samples: ", mean30, "\n", "Standard deviation of 30 samples: ", sd30, sep = "")
+```
 
+```{r}
 # Repeat (replicate) finding the mean of 60 samples a total of 10,000 times
 CLT_Sum_Ben_60 <- replicate(n = times,
-          sum(sample(x = tree_benefits$benefits, 
+          sum(sample(x = trees2$benefits, 
                       size = 60, 
                       replace = TRUE))
 )
 
 # Find the mean and sd for n=60
-mean60 <- mean(CLT_Sum_Ben_60)
-sd60 <- sd(CLT_Sum_Ben_60)
+mean60 <- mean(CLT_Sum_Ben_60, na.rm = T)
+sd60 <- sd(CLT_Sum_Ben_60, na.rm = T)
+cat("Mean sum of 60 samples: ", mean60, "\n", "Standard deviation of 60 samples: ", sd60, sep = "")
+```
 
+```{r}
 # Repeat (replicate) finding the mean of 150 samples a total of 10,000 times
 CLT_Sum_Ben_150 <- replicate(n = times,
-          sum(sample(x = tree_benefits$benefits, 
+          sum(sample(x = trees2$benefits, 
                       size = 150, 
                       replace = TRUE))
 )
 
 # Find the mean and sd for n=150
-mean150 <- mean(CLT_Sum_Ben_150)
-sd150 <- sd(CLT_Sum_Ben_150)
-
-data.frame(n = c(30,60,150),
-           sum_means = c(mean30, mean60, mean150),
-           sum_sd = c(sd30, sd60,sd150)
-) %>%
-  gt::gt(caption = "Mean and Standard Deviation of Sum for different sample sizes n")
+mean150 <- mean(CLT_Sum_Ben_150, na.rm = T)
+sd150 <- sd(CLT_Sum_Ben_150, na.rm = T)
+cat("Mean sum of 150 samples: ", mean150, "\n", "Standard deviation of 150 samples: ", sd150, sep = "")
 ```
 
 ::: callout-note
 #### Question
 
-What do you notice about the mean and standard deviation as the number of samples increases?
+What do you notice about the mean and standard deviation as the sample size increases?
 :::
 
-Let's look at a histogram of the means as the number of samples increases:
+Let's look at a histogram of the means as the sample size increases:
 
 ```{r Hist Sums for ns}
 # Create data frame to graph the sampled means
@@ -330,6 +342,31 @@ sd <- 1 # Change me!
 lower <- FALSE
 pnorm(p, mean, sd, lower.tail = lower)
 ```
+
+Answer:
+:::
+
+## Exploration - Relationship Between Height and Benefits?
+
+Leaving the CLT aside, let's query the data one final time with the question: does there seem to be a relationship between the Height of a tree and it's estimated overall Benefits?
+
+To explore this, let's look at a quick scatterplot and add a trendline.
+
+```{r}
+trees2 %>%
+  ggplot(aes(x = height, y = benefits)) + 
+  geom_point(alpha = .1) + 
+  geom_smooth(method = "lm")
+```
+
+::: callout-note
+#### Question
+
+Based on the scatter plot, do you think there is a relationship between height and benefits of a tree?
+
+Answer:
+
+What is the approximate equation of the line that describes the data?
 
 Answer:
 :::
